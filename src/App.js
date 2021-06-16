@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 
 import "./styles.css";
-import imagesApi from "../src/services/imagesApi";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import fetchImages from "../src/services/imagesApi";
+import Loader from "react-loader-spinner";
 
 import Searchbar from "./components/Searchbar";
 import ImageGallery from "./components/ImageGallery";
 import ImageGalleryItem from "./components/ImageGalleryItem";
 import Button from "./components/Button";
+import Modal from "./components/Modal";
 
 export class App extends Component {
   state = {
@@ -16,6 +19,7 @@ export class App extends Component {
     isLoading: false,
     error: null,
     largeImageURL: "",
+    showModal: false,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -43,8 +47,7 @@ export class App extends Component {
 
     this.setState({ isLoading: true });
 
-    imagesApi
-      .fetchImages(options)
+    fetchImages(options)
       .then((images) => {
         this.setState((prevState) => ({
           images: [...prevState.images, ...images],
@@ -62,8 +65,17 @@ export class App extends Component {
     });
   };
 
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  };
+
+  handleClick = (image) => {
+    this.toggleModal();
+    this.setState({ largeImageURL: image });
+  };
+
   render() {
-    const { images, isLoading, error } = this.state;
+    const { images, isLoading, error, showModal, largeImageURL } = this.state;
     const renderLoadButton = images.length > 0 && !isLoading;
 
     return (
@@ -73,12 +85,26 @@ export class App extends Component {
         {error && <h2>Please try again you request</h2>}
 
         <ImageGallery>
-          <ImageGalleryItem images={images} />
+          <ImageGalleryItem images={images} onClick={this.handleClick} />
         </ImageGallery>
 
-        {isLoading && <h2>Loading...</h2>}
+        {isLoading && (
+          <Loader
+            className="Loader"
+            type="Circles"
+            color="#471135"
+            height={100}
+            width={100}
+          />
+        )}
 
         {renderLoadButton && <Button onClick={this.getImages} />}
+
+        {showModal && (
+          <Modal onClose={this.toggleModal}>
+            <img src={largeImageURL} alt="" />
+          </Modal>
+        )}
       </div>
     );
   }
