@@ -2,7 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const ImageGallery = ({ children }) => (
-  <ul className="ImageGallery">{children}</ul>
+  <ul id="imageGallery" className="ImageGallery">
+    {children}
+  </ul>
 );
 
 ImageGallery.propTypes = {

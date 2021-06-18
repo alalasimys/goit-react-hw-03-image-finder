@@ -26,10 +26,6 @@ export class App extends Component {
     if (prevState.searchQuery !== this.state.searchQuery) {
       this.getImages();
     }
-
-    if (this.state.currentPage > 2) {
-      this.scrollTo();
-    }
   }
 
   onChangeQuery = (query) => {
@@ -55,14 +51,13 @@ export class App extends Component {
         }));
       })
       .catch((error) => this.setState({ error }))
-      .finally(() => this.setState({ isLoading: false }));
-  };
-
-  scrollTo = () => {
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: "smooth",
-    });
+      .finally(() => {
+        this.setState({ isLoading: false });
+        window.scrollTo({
+          top: document.querySelector("#imageGallery").scrollHeight,
+          behavior: "smooth",
+        });
+      });
   };
 
   toggleModal = () => {
@@ -82,7 +77,7 @@ export class App extends Component {
       <div>
         <Searchbar onSubmit={this.onChangeQuery} />
 
-        {error && <h2>Please try again you request</h2>}
+        {error && <h2>Please try again your request</h2>}
 
         <ImageGallery>
           <ImageGalleryItem images={images} onClick={this.handleClick} />
