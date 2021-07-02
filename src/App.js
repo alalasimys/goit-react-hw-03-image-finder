@@ -49,14 +49,16 @@ export class App extends Component {
           images: [...prevState.images, ...images],
           currentPage: prevState.currentPage + 1,
         }));
+        if (currentPage > 1) {
+          window.scrollTo({
+            top: document.querySelector("#imageGallery").scrollHeight,
+            behavior: "smooth",
+          });
+        }
       })
       .catch((error) => this.setState({ error }))
       .finally(() => {
         this.setState({ isLoading: false });
-        window.scrollTo({
-          top: document.querySelector("#imageGallery").scrollHeight,
-          behavior: "smooth",
-        });
       });
   };
 
